@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LMS", "LMS\LMS.csproj", "{F7779DCA-6458-4556-ABC4-E8D6A159851E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMSControllerTests", "LMSControllerTests\LMSControllerTests.csproj", "{3DB985E5-FD72-46B2-9F8B-21ADDB8F27E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LMSControllerTests", "LMSControllerTests\LMSControllerTests.csproj", "{3DB985E5-FD72-46B2-9F8B-21ADDB8F27E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
