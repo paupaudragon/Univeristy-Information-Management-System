@@ -183,6 +183,11 @@ namespace LMS.Areas.Identity.Pages.Account
 
         /*******Begin code to modify********/
 
+
+        //TZHOU:
+        // This whole page is done
+
+
         /// <summary>
         /// Create a new user of the LMS with the specified information and add it to the database.
         /// Assigns the user a unique uID consisting of a 'u' followed by 7 digits.

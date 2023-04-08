@@ -1,7 +1,13 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\LMS",
+    "\\LMS\\Areas",
+    "\\LMS\\Areas\\Identity",
+    "\\LMS\\Areas\\Identity\\Pages",
+    "\\LMS\\Areas\\Identity\\Pages\\Account",
+    "\\LMS\\Controllers"
   ],
-  "SelectedNode": "\\LMS.sln",
+  "SelectedNode": "\\LMS\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using LMS.Models.LMSModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -49,6 +50,8 @@ namespace LMS.Controllers
         /// false if the department already exists, true otherwise.</returns>
         public IActionResult CreateDepartment(string subject, string name)
         {
+
+            //tzhou: done
             if(IsSubjectExist(subject))
                 return Json(new { success = false});
 
@@ -92,8 +95,16 @@ namespace LMS.Controllers
         /// <returns>The JSON result</returns>
         public IActionResult GetCourses(string subject)
         {
-            
-            return Json(null);
+            //tzhou: done
+            var query = from course in db.Courses
+                        where course.Department == subject
+                        select new
+                        {
+                            number = course.Number,
+                            name  = course.Name
+                        }; 
+
+            return Json(query.ToArray());
         }
 
         /// <summary>
@@ -124,11 +135,43 @@ namespace LMS.Controllers
         /// <returns>A JSON object containing {success = true/false}.
         /// false if the course already exists, true otherwise.</returns>
         public IActionResult CreateCourse(string subject, int number, string name)
-        {           
+        {   
+            //thzou: done
+            if(IsCourseExist(number, subject))
+                return Json(new { success = false });
 
-            return Json(new { success = false });
+            uint newId = GetNewCourseId();
+
+            Course course = new Course();
+            course.CatalogId = newId;
+            course.Department = subject;
+            course.Number = (uint)number;
+            course.Name = name; 
+            db.Courses.Add(course);
+            db.SaveChanges();
+
+            return Json(new { success = true });
         }
 
+        private bool IsCourseExist(int number, string subject)
+        {
+            var query = from course in db.Courses
+                        where course.Number == number && course.Name == subject
+                        select course;
+            return query.Any();
+        }
+        private uint GetNewCourseId()
+        {
+            var query = from course in db.Courses
+                        orderby course.CatalogId descending
+                        select course.CatalogId;
+
+            uint highest = query.FirstOrDefault();
+            if (highest == 0)
+                return 1;
+
+            return ++highest;
+        }
 
         /// <summary>
         /// Creates a class offering of a given course.
