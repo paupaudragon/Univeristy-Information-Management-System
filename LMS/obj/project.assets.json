@@ -9910,23 +9910,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Andy Tran\\.nuget\\packages\\": {},
+    "C:\\Users\\owner\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\LMSPhase3\\LMS\\LMS.csproj",
+      "projectUniqueName": "C:\\Users\\owner\\Source\\Repos\\UniversityOfUtah_CS5530_LMS\\LMS\\LMS.csproj",
       "projectName": "LMS",
-      "projectPath": "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\LMSPhase3\\LMS\\LMS.csproj",
-      "packagesPath": "C:\\Users\\Andy Tran\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\LMSPhase3\\LMS\\obj\\",
+      "projectPath": "C:\\Users\\owner\\Source\\Repos\\UniversityOfUtah_CS5530_LMS\\LMS\\LMS.csproj",
+      "packagesPath": "C:\\Users\\owner\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\owner\\Source\\Repos\\UniversityOfUtah_CS5530_LMS\\LMS\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Andy Tran\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

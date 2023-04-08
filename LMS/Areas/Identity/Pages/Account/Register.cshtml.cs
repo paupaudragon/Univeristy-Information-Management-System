@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LMS.Areas.Identity.Pages.Account
 {
@@ -194,7 +195,134 @@ namespace LMS.Areas.Identity.Pages.Account
         /// <returns>The uID of the new user</returns>
         string CreateNewUser( string firstName, string lastName, DateTime DOB, string departmentAbbrev, string role )
         {
-            return "unknown";
+            //Get the highest id in DB
+            var highestStudentId = from stu in db.Students
+                                   orderby stu.UId descending
+                                   select stu.UId;
+
+            var highestProfessorId = from prof in db.Professors
+                                     orderby prof.UId descending
+                                     select prof.UId;
+
+            var highestAdministratorId = from admin in db.Administrators
+                                         orderby admin.UId descending
+                                         select admin.UId;
+
+            int stuId = ConvertUidToInt(highestStudentId.FirstOrDefault());
+            int profID = ConvertUidToInt(highestProfessorId.FirstOrDefault());
+            int adminId = ConvertUidToInt(highestAdministratorId.FirstOrDefault());
+
+            string newId = GetNewIdString(stuId, profID, adminId);
+
+            if (role == "Administrator")
+                InsertAnAdmin(newId, firstName, lastName, DateOnly.FromDateTime(DOB));
+
+            if (role == "Professor")
+                InsertAProfessor(newId, firstName, lastName, DateOnly.FromDateTime(DOB), departmentAbbrev);
+
+            if (role == "Student")
+                InsertAStudent(newId, firstName, lastName, DateOnly.FromDateTime(DOB), departmentAbbrev);
+
+            return newId;
+        }
+
+        private static int ConvertUidToInt(string Uid)
+        {
+            if(Uid is not null)
+            {
+                StringBuilder numId = new(); 
+                for(int i = 0; i<Uid.Length; i++)
+                {
+                    if (Uid[i]!='u' && Uid[i] != '0')
+                    {
+                        numId.Append(Uid[i]);
+                    }
+                }
+                int id = Convert.ToInt32(numId.ToString());
+                return id;
+                
+            }
+
+            return -1; 
+        }
+        private static string GetNewIdString(int stuId, int profID, int adminId)
+        {
+            int newId; 
+            int[] ids = { stuId, profID, adminId };
+            int highestId = ids.Max();
+
+            if (highestId < 0)
+                return "u0000001";
+            else
+                newId = highestId + 1;
+
+            string idString = newId.ToString();
+            if (newId.ToString().Length < 7)
+            {
+                for(int i =0; i < (7- newId.ToString().Length); i++){
+                    idString = "0" + idString;
+                }
+            }
+
+            return idString = "u" + idString;
+        }
+
+        private void InsertAStudent(string Uid, string FName, string LName, DateOnly DOB, string Major)
+        {
+            Student student = new Student();
+            student.UId = Uid;
+            student.FName = FName; 
+            student.LName = LName;
+            student.Dob = DOB;
+            if(IsDepartmentExist(Major))
+                student.Major = Major;
+
+            db.Students.Add(student);
+            db.SaveChanges();
+
+
+        }
+
+        private void InsertAProfessor(string Uid, string FName, string LName, DateOnly DOB, string WorksIn)
+        {
+            Professor professor = new Professor();
+            professor.UId = Uid; 
+            professor.FName = FName;
+            professor.LName = LName;
+            professor.Dob = DOB;
+            if(IsDepartmentExist(WorksIn))
+                professor.WorksIn = WorksIn;
+
+            db.Professors.Add(professor); 
+            db.SaveChanges();
+
+        } 
+        
+        private void InsertAnAdmin(string Uid, string FName, string LName, DateOnly DOB)
+        {
+            Administrator admin = new Administrator();
+            admin.UId = Uid;
+            admin.FName = FName;
+            admin.LName = LName; 
+            admin.Dob = DOB;
+
+            db.Administrators.Add(admin);
+            db.SaveChanges();
+        }
+
+        private bool IsDepartmentExist(string dept)
+        {
+            var allDepts = from dpt in db.Departments
+                           select dpt.Subject;
+            foreach (string s in allDepts)
+            {
+                if (dept == s)
+                {
+                    return true; 
+                }
+            }
+
+            return false;
         }
 
         /*******End code to modify********/

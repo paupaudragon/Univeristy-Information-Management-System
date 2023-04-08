@@ -13,7 +13,7 @@ namespace LMS.Models.LMSModels
         }
 
         public string Name { get; set; } = null!;
-        public string Subject { get; set; } = null!;
+        public string Subject { get; set; } = null!; //department abbrev.
 
         public virtual ICollection<Course> Courses { get; set; }
         public virtual ICollection<Professor> Professors { get; set; }
