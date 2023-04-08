@@ -49,10 +49,38 @@ namespace LMS.Controllers
         /// false if the department already exists, true otherwise.</returns>
         public IActionResult CreateDepartment(string subject, string name)
         {
-            
-            return Json(new { success = false});
-        }
+            if(IsSubjectExist(subject))
+                return Json(new { success = false});
 
+            Department department = new Department();
+            department.Name = name;
+            department.Subject = subject;
+
+            db.Departments.Add(department);
+            db.SaveChanges();
+            return Json(new { success = true });
+        }
+        
+        /// <summary>
+        /// Checks is a subject already exist in the database
+        /// </summary>
+        /// <param name="subject">The subject code</param>
+        /// <returns>True, if the subject already exists; otherwise false</returns>
+        private bool IsSubjectExist(string subject)
+        {
+            var query = from dept in db.Departments
+                        select dept.Subject;
+            foreach (string s in query)
+            {
+                if (subject.Equals(s))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
 
         /// <summary>
         /// Returns a JSON array of all the courses in the given department.
@@ -97,9 +125,9 @@ namespace LMS.Controllers
         /// false if the course already exists, true otherwise.</returns>
         public IActionResult CreateCourse(string subject, int number, string name)
         {           
+
             return Json(new { success = false });
         }
-
 
 
         /// <summary>

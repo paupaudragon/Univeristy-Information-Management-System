@@ -1,10 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\LMS",
-    "\\LMS\\Models",
-    "\\LMS\\Models\\LMSModels"
+    ""
   ],
-  "SelectedNode": "\\LMS\\Models\\LMSModels\\Student.cs",
+  "SelectedNode": "\\LMS.sln",
   "PreviewInSolutionExplorer": false
 }
