@@ -8,6 +8,6 @@
     "\\LMS\\Areas\\Identity\\Pages\\Account",
     "\\LMS\\Controllers"
   ],
-  "SelectedNode": "\\LMS\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
+  "SelectedNode": "\\LMS\\Controllers\\AdministratorController.cs",
   "PreviewInSolutionExplorer": false
 }

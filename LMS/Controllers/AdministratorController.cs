@@ -50,9 +50,11 @@ namespace LMS.Controllers
         /// false if the department already exists, true otherwise.</returns>
         public IActionResult CreateDepartment(string subject, string name)
         {
+            //use this to see what's the normal output of webpage when false.
+            //return Json(new { success = false });
 
             //tzhou: done
-            if(IsSubjectExist(subject))
+            if (IsSubjectExist(subject))
                 return Json(new { success = false});
 
             Department department = new Department();
@@ -135,9 +137,12 @@ namespace LMS.Controllers
         /// <returns>A JSON object containing {success = true/false}.
         /// false if the course already exists, true otherwise.</returns>
         public IActionResult CreateCourse(string subject, int number, string name)
-        {   
+        {
+            //To see what's false looks like in webpage
+            //return Json(new { success = false });
+
             //thzou: done
-            if(IsCourseExist(number, subject))
+            if (IsCourseExist(number, subject))
                 return Json(new { success = false });
 
             uint newId = GetNewCourseId();
@@ -156,7 +161,7 @@ namespace LMS.Controllers
         private bool IsCourseExist(int number, string subject)
         {
             var query = from course in db.Courses
-                        where course.Number == number && course.Name == subject
+                        where course.Number == number && course.Department == subject
                         select course;
             return query.Any();
         }
