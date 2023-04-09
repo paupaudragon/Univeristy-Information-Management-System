@@ -231,6 +231,11 @@ namespace LMS.Areas.Identity.Pages.Account
             return newId;
         }
 
+        /// <summary>
+        /// Converts uid string to int
+        /// </summary>
+        /// <param name="Uid">Uid string</param>
+        /// <returns>id in integer</returns>
         private static int ConvertUidToInt(string Uid)
         {
             if(Uid is not null)
@@ -250,6 +255,14 @@ namespace LMS.Areas.Identity.Pages.Account
 
             return -1; 
         }
+
+        /// <summary>
+        /// Gets the new user id to add
+        /// </summary>
+        /// <param name="stuId">current highest uid in students</param>
+        /// <param name="profID">current highest uid in professors</param>
+        /// <param name="adminId">current highest uid in admins</param>
+        /// <returns>a new uid string to add</returns>
         private static string GetNewIdString(int stuId, int profID, int adminId)
         {
             int newId; 
@@ -272,6 +285,14 @@ namespace LMS.Areas.Identity.Pages.Account
             return idString = "u" + idString;
         }
 
+        /// <summary>
+        /// Inserts a student into database
+        /// </summary>
+        /// <param name="Uid">the new uid</param>
+        /// <param name="FName">first name of the student</param>
+        /// <param name="LName">last name of the students</param>
+        /// <param name="DOB">the birthday of the student </param>
+        /// <param name="Major">The major of the student</param>
         private void InsertAStudent(string Uid, string FName, string LName, DateOnly DOB, string Major)
         {
             Student student = new Student();
@@ -285,9 +306,16 @@ namespace LMS.Areas.Identity.Pages.Account
             db.Students.Add(student);
             db.SaveChanges();
 
-
         }
 
+        /// <summary>
+        /// Inserts a professor to the database
+        /// </summary>
+        /// <param name="Uid">the uid of the professor</param>
+        /// <param name="FName">the first name of the professor</param>
+        /// <param name="LName">last name of the professor</param>
+        /// <param name="DOB">date of birth of the professor</param>
+        /// <param name="WorksIn">the department of the professor</param>
         private void InsertAProfessor(string Uid, string FName, string LName, DateOnly DOB, string WorksIn)
         {
             Professor professor = new Professor();
@@ -302,7 +330,14 @@ namespace LMS.Areas.Identity.Pages.Account
             db.SaveChanges();
 
         } 
-        
+
+        /// <summary>
+        /// Inserts an admin to the database
+        /// </summary>
+        /// <param name="Uid">uid of the admin</param>
+        /// <param name="FName">first name of the admin</param>
+        /// <param name="LName">last name of the admin</param>
+        /// <param name="DOB">date of birth of the admin</param>
         private void InsertAnAdmin(string Uid, string FName, string LName, DateOnly DOB)
         {
             Administrator admin = new Administrator();
@@ -315,6 +350,11 @@ namespace LMS.Areas.Identity.Pages.Account
             db.SaveChanges();
         }
 
+        /// <summary>
+        /// Checks if the department already exist
+        /// </summary>
+        /// <param name="dept">The departemt abbrev</param>
+        /// <returns>True, if it exist; otherwise, false</returns>
         private bool IsDepartmentExist(string dept)
         {
             var allDepts = from dpt in db.Departments
