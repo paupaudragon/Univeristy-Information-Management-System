@@ -120,8 +120,17 @@ namespace LMS.Controllers
         /// <returns>The JSON result</returns>
         public IActionResult GetProfessors(string subject)
         {
-            
-            return Json(null);
+            var query = from f in db.Professors
+                        join d in db.Departments
+                        on f.WorksIn equals d.Subject
+                        select new
+                        {
+                            lname = f.LName,
+                            fname = f.FName,
+                            uid = f.UId
+                        };
+
+            return Json(query.ToArray());
             
         }
 
@@ -145,7 +154,7 @@ namespace LMS.Controllers
             if (IsCourseExist(number, subject))
                 return Json(new { success = false });
 
-            uint newId = GetNewCourseId();
+            uint newId = GetNewCourseID();
 
             Course course = new Course();
             course.CatalogId = newId;
@@ -158,6 +167,12 @@ namespace LMS.Controllers
             return Json(new { success = true });
         }
 
+        /// <summary>
+        /// Checks if a course exist
+        /// </summary>
+        /// <param name="number">Course number </param>
+        /// <param name="subject">Course's departemnt abbrev.</param>
+        /// <returns>True, if it exist; otherwise false</returns>
         private bool IsCourseExist(int number, string subject)
         {
             var query = from course in db.Courses
@@ -165,16 +180,18 @@ namespace LMS.Controllers
                         select course;
             return query.Any();
         }
-        private uint GetNewCourseId()
+
+        /// <summary>
+        /// Gets a new course ID to use
+        /// </summary>
+        /// <returns>A new course ID</returns>
+        private uint GetNewCourseID()
         {
             var query = from course in db.Courses
                         orderby course.CatalogId descending
                         select course.CatalogId;
 
             uint highest = query.FirstOrDefault();
-            if (highest == 0)
-                return 1;
-
             return ++highest;
         }
 
@@ -195,13 +212,84 @@ namespace LMS.Controllers
         /// a Class offering of the same Course in the same Semester,
         /// true otherwise.</returns>
         public IActionResult CreateClass(string subject, int number, string season, int year, DateTime start, DateTime end, string location, string instructor)
-        {            
-            return Json(new { success = false});
+        {
+            //tzhou: done
+
+            //course not exist
+            if (!IsCourseExist(number, subject))
+                return Json(new { success = false }); 
+
+            //Course exist,get course ID
+            uint courseID = GetCourseID(number, subject);
+            if(IsClassExist(season, year, courseID))
+                return Json(new { success = false });
+
+
+            uint classID = GetNewClassID();
+
+            Class c = new Class();
+            c.ClassId = classID;
+            c.Season = season;
+            c.Year = (uint)year;
+            c.Location = location;
+            c.StartTime = TimeOnly.FromDateTime(start);
+            c.EndTime = TimeOnly.FromDateTime(end);
+            c.Listing = courseID;
+            c.TaughtBy = instructor; 
+
+            db.Add(c);
+            db.SaveChanges();
+        
+            return Json(new { success = true });
         }
 
+        /// <summary>
+        /// Checks if a class exists
+        /// </summary>
+        /// <param name="season">The season of the class offering</param>
+        /// <param name="year">The year the class is offering</param>
+        /// <param name="Listing"></param>
+        /// <returns>True, if class exist; otherwise false</returns>
+        private bool IsClassExist(string season, int year, uint Listing)
+        {
+            //  UNIQUE KEY `Season` (`Season`,`Year`,`Listing`)
+            var query = from c in db.Classes
+                        where c.Season.Equals(season) && c.Year == year && c.Listing == Listing
+                        select c;
+            return query.Any();
+
+        }
+
+        /// <summary>
+        /// Gets the course id of a given course
+        /// </summary>
+        /// <param name="number">the course number</param>
+        /// <param name="subject">the course department</param>
+        /// <returns></returns>
+        private uint GetCourseID(int number, string subject)
+        {
+            var query = from course in db.Courses
+                        where course.Number == number && course.Department.Equals(subject)
+                        select course.CatalogId;
+            return query.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Gets the new ID of class to add
+        /// </summary>
+        /// <returns>A new id</returns>
+        private uint GetNewClassID()
+        {
+            var query = from c in db.Classes
+                        orderby c.ClassId descending
+                        select c.ClassId; 
+            uint highest =  query.FirstOrDefault();
+            return ++highest; 
+        }
 
         /*******End code to modify********/
 
     }
+
 }
 
