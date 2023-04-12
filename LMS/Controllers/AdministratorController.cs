@@ -280,6 +280,7 @@ namespace LMS.Controllers
         /// <returns>A new id</returns>
         private uint GetNewClassID()
         {
+            //thzou: done
             var query = from c in db.Classes
                         orderby c.ClassId descending
                         select c.ClassId; 

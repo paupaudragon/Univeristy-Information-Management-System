@@ -2,12 +2,10 @@
   "ExpandedNodes": [
     "",
     "\\LMS",
-    "\\LMS\\Areas",
-    "\\LMS\\Areas\\Identity",
-    "\\LMS\\Areas\\Identity\\Pages",
-    "\\LMS\\Areas\\Identity\\Pages\\Account",
-    "\\LMS\\Controllers"
+    "\\LMS\\Controllers",
+    "\\LMS\\Models",
+    "\\LMS\\Models\\LMSModels"
   ],
-  "SelectedNode": "\\LMS\\Controllers\\AdministratorController.cs",
+  "SelectedNode": "\\LMS\\Controllers\\CommonController.cs",
   "PreviewInSolutionExplorer": false
 }
