@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\Phase3\\LMSControllerTests\\LMSControllerTests.csproj": {}
+    "C:\\Users\\owner\\source\\repos\\UniversityOfUtah_CS5530_LMS\\LMSControllerTests\\LMSControllerTests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\Phase3\\LMSControllerTests\\LMSControllerTests.csproj": {
+    "C:\\Users\\owner\\source\\repos\\UniversityOfUtah_CS5530_LMS\\LMSControllerTests\\LMSControllerTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\Phase3\\LMSControllerTests\\LMSControllerTests.csproj",
+        "projectUniqueName": "C:\\Users\\owner\\source\\repos\\UniversityOfUtah_CS5530_LMS\\LMSControllerTests\\LMSControllerTests.csproj",
         "projectName": "LMSControllerTests",
-        "projectPath": "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\Phase3\\LMSControllerTests\\LMSControllerTests.csproj",
-        "packagesPath": "C:\\Users\\Andy Tran\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\Phase3\\LMSControllerTests\\obj\\",
+        "projectPath": "C:\\Users\\owner\\source\\repos\\UniversityOfUtah_CS5530_LMS\\LMSControllerTests\\LMSControllerTests.csproj",
+        "packagesPath": "C:\\Users\\owner\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\owner\\source\\repos\\UniversityOfUtah_CS5530_LMS\\LMSControllerTests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Andy Tran\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -33,8 +33,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\Phase3\\LMS\\LMS.csproj": {
-                "projectPath": "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\Phase3\\LMS\\LMS.csproj"
+              "C:\\Users\\owner\\source\\repos\\UniversityOfUtah_CS5530_LMS\\LMS\\LMS.csproj": {
+                "projectPath": "C:\\Users\\owner\\source\\repos\\UniversityOfUtah_CS5530_LMS\\LMS\\LMS.csproj"
               }
             }
           }
@@ -94,20 +94,20 @@
         }
       }
     },
-    "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\Phase3\\LMS\\LMS.csproj": {
+    "C:\\Users\\owner\\source\\repos\\UniversityOfUtah_CS5530_LMS\\LMS\\LMS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\Phase3\\LMS\\LMS.csproj",
+        "projectUniqueName": "C:\\Users\\owner\\source\\repos\\UniversityOfUtah_CS5530_LMS\\LMS\\LMS.csproj",
         "projectName": "LMS",
-        "projectPath": "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\Phase3\\LMS\\LMS.csproj",
-        "packagesPath": "C:\\Users\\Andy Tran\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Andy Tran\\OneDrive - Salt Lake Community College\\Desktop\\Phase3\\LMS\\obj\\",
+        "projectPath": "C:\\Users\\owner\\source\\repos\\UniversityOfUtah_CS5530_LMS\\LMS\\LMS.csproj",
+        "packagesPath": "C:\\Users\\owner\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\owner\\source\\repos\\UniversityOfUtah_CS5530_LMS\\LMS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Andy Tran\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

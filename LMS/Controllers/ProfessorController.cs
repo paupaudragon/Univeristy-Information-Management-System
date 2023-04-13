@@ -226,6 +226,13 @@ namespace LMS_CustomIdentity.Controllers
         /// <returns>A JSON object containing {success = true/false} </returns>
         public IActionResult CreateAssignmentCategory(string subject, int num, string season, int year, string category, int catweight)
         {
+            //Test: 
+            //Paased: unique key (category name + class id) 
+            //**BUG**: user input on weight: 1% => 0
+
+
+
+
             //Andy Tran: Done
             // Find the class with the specified subject, number, season, and year.
             var cls = db.Classes.FirstOrDefault(c => c.ListingNavigation.Department == subject && c.ListingNavigation.Number == num && c.Season == season && c.Year == year);
@@ -276,6 +283,9 @@ namespace LMS_CustomIdentity.Controllers
         /// <returns>A JSON object containing success = true/false</returns>
         public IActionResult CreateAssignment(string subject, int num, string season, int year, string category, string asgname, int asgpoints, DateTime asgdue, string asgcontents)
         {
+            //Test: 
+            //**BUG**: same assginment name giving error pop-up instead of normal and small "you can't do this" window
+
             //Andy Tran: TO-DO still need to update the grade
             // Retrieve the class and category objects for the given parameters
             var query = from course in db.Courses
@@ -332,6 +342,9 @@ namespace LMS_CustomIdentity.Controllers
         /// <returns>The JSON array</returns>
         public IActionResult GetSubmissionsToAssignment(string subject, int num, string season, int year, string category, string asgname)
         {
+            //Test: 
+            //Need discussion: maybe bug total pts 10, but professor gave 20
+
             //CatalogID = Listing
             //ClassId == Inclass
             //CategoryId = Category

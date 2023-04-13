@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -131,7 +132,23 @@ namespace LMS.Controllers
         /// <returns>The assignment contents</returns>
         public IActionResult GetAssignmentContents(string subject, int num, string season, int year, string category, string asgname)
         {
-            return Content("");
+           //Test: 
+           //passed: text longer than 8192 char
+
+            var query = from course in db.Courses
+                        where course.Number == num && course.Department == subject
+                        from cls in course.Classes
+                        where cls.Season == season && cls.Year == year 
+                        from assignCate in cls.AssignmentCategories
+                        where assignCate.Name == category
+                        from assignment in assignCate.Assignments
+                        where assignment.Name == asgname
+                        select new { assignment.Contents};
+
+            
+            string content = query.First().Contents;
+            return Content(content);
+
         }
 
 
@@ -151,7 +168,24 @@ namespace LMS.Controllers
         /// <returns>The submission text</returns>
         public IActionResult GetSubmissionText(string subject, int num, string season, int year, string category, string asgname, string uid)
         {
-            return Content("");
+            string submission = "";
+
+            var query = from course in db.Courses
+                        where course.Number == num && course.Department == subject
+                        from cls in course.Classes
+                        where cls.Season == season && cls.Year == year
+                        from cat in cls.AssignmentCategories
+                        where cat.Name == category
+                        from asn in cat.Assignments
+                        where asn.Name == asgname
+                        from sub in asn.Submissions
+                        where sub.StudentNavigation.UId == uid
+                        select new {sub.SubmissionContents };
+
+            if (query.Any())
+                submission = query.First().SubmissionContents;
+            
+            return Content(submission);
         }
 
 
