@@ -150,7 +150,7 @@ namespace LMS.Controllers
                             aname = assignments.Name,
                             cname = assignmentCategories.Name,
                             due = assignments.Due,
-                            score = submission != null ? submission.Score : (uint?)null
+                            score = (submission != null) ? submission.Score : (uint?)null
                         };
 
             return Json(query.ToArray());
@@ -309,9 +309,79 @@ namespace LMS.Controllers
         /// <returns>A JSON object containing a single field called "gpa" with the number value</returns>
         public IActionResult GetGPA(string uid)
         {
-            return Json(null);
+            //AndyTran: Done
+            var enrolledClasses = db.Enrolleds.Where(e => e.Student == uid && e.Grade != "--").Include(e => e.ClassNavigation).ToList();
+
+            if (enrolledClasses.Count == 0)
+            {
+                return Json(new { gpa = 0.0 });
+            }
+
+            var gpa = CalculateGPA(enrolledClasses);
+
+            return Json(new { gpa });
         }
 
+        private double CalculateGPA(List<Enrolled> enrolledClasses)
+        {
+            double totalPoints = 0.0;
+            double totalCredits = 0.0;
+
+            foreach (var enrolledClass in enrolledClasses)
+            {
+                var grade = enrolledClass.Grade;
+                var classCredits = 4.0;
+
+                if (grade == "A")
+                {
+                    totalPoints += 4.0 * classCredits;
+                }
+                else if (grade == "A-")
+                {
+                    totalPoints += 3.7 * classCredits;
+                }
+                else if (grade == "B+")
+                {
+                    totalPoints += 3.3 * classCredits;
+                }
+                else if (grade == "B")
+                {
+                    totalPoints += 3.0 * classCredits;
+                }
+                else if (grade == "B-")
+                {
+                    totalPoints += 2.7 * classCredits;
+                }
+                else if (grade == "C+")
+                {
+                    totalPoints += 2.3 * classCredits;
+                }
+                else if (grade == "C")
+                {
+                    totalPoints += 2.0 * classCredits;
+                }
+                else if (grade == "C-")
+                {
+                    totalPoints += 1.7 * classCredits;
+                }
+                else if (grade == "D+")
+                {
+                    totalPoints += 1.3 * classCredits;
+                }
+                else if (grade == "D")
+                {
+                    totalPoints += 1.0 * classCredits;
+                }
+                else if (grade == "D-")
+                {
+                    totalPoints += 0.7 * classCredits;
+                }
+
+                totalCredits += classCredits;
+            }
+
+            return totalPoints / totalCredits;
+        }
         /*******End code to modify********/
 
     }

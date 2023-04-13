@@ -508,13 +508,13 @@ C:\Users\owner\source\repos\UniversityOfUtah_CS5530_LMS\LMS\obj\Debug\net7.0\ref
 C:\Users\owner\source\repos\UniversityOfUtah_CS5530_LMS\LMS\obj\Debug\net7.0\LMS.pdb
 C:\Users\owner\source\repos\UniversityOfUtah_CS5530_LMS\LMS\obj\Debug\net7.0\LMS.genruntimeconfig.cache
 C:\Users\owner\source\repos\UniversityOfUtah_CS5530_LMS\LMS\obj\Debug\net7.0\ref\LMS.dll
+C:\Users\Andy Tran\OneDrive - Salt Lake Community College\Desktop\Phase3\LMS\bin\Debug\net7.0\LMS.dll
 C:\Users\Andy Tran\OneDrive - Salt Lake Community College\Desktop\Phase3\LMS\bin\Debug\net7.0\appsettings.Development.json
 C:\Users\Andy Tran\OneDrive - Salt Lake Community College\Desktop\Phase3\LMS\bin\Debug\net7.0\appsettings.json
 C:\Users\Andy Tran\OneDrive - Salt Lake Community College\Desktop\Phase3\LMS\bin\Debug\net7.0\LMS.staticwebassets.runtime.json
 C:\Users\Andy Tran\OneDrive - Salt Lake Community College\Desktop\Phase3\LMS\bin\Debug\net7.0\LMS.exe
 C:\Users\Andy Tran\OneDrive - Salt Lake Community College\Desktop\Phase3\LMS\bin\Debug\net7.0\LMS.deps.json
 C:\Users\Andy Tran\OneDrive - Salt Lake Community College\Desktop\Phase3\LMS\bin\Debug\net7.0\LMS.runtimeconfig.json
-C:\Users\Andy Tran\OneDrive - Salt Lake Community College\Desktop\Phase3\LMS\bin\Debug\net7.0\LMS.dll
 C:\Users\Andy Tran\OneDrive - Salt Lake Community College\Desktop\Phase3\LMS\bin\Debug\net7.0\LMS.pdb
 C:\Users\Andy Tran\OneDrive - Salt Lake Community College\Desktop\Phase3\LMS\bin\Debug\net7.0\Humanizer.dll
 C:\Users\Andy Tran\OneDrive - Salt Lake Community College\Desktop\Phase3\LMS\bin\Debug\net7.0\MessagePack.dll
