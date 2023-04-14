@@ -50,11 +50,14 @@ namespace LMS.Controllers
         /// false if the department already exists, true otherwise.</returns>
         public IActionResult CreateDepartment(string subject, string name)
         {
-            //use this to see what's the normal output of webpage when false.
-            //return Json(new { success = false });
+            //Test: 
+            //1. create a new dept with different subject abbrev
+            //2. create a dpt with same subject abbrev should not allow
+            //BUG:
+            //1. Exception error when sub. abbrev. is longer than 4 char.(fixed)
 
             //tzhou: done
-            if (IsSubjectExist(subject))
+            if (IsSubjectExist(subject) || subject.Length>4)
                 return Json(new { success = false});
 
             Department department = new Department();
