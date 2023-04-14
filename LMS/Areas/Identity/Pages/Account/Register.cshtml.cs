@@ -200,6 +200,12 @@ namespace LMS.Areas.Identity.Pages.Account
         /// <returns>The uID of the new user</returns>
         string CreateNewUser( string firstName, string lastName, DateTime DOB, string departmentAbbrev, string role )
         {
+            //Test: 
+            //1. Same role with exact same names and dob
+            //2. Same personal info different role
+
+            //Test done
+
             //Get the highest id in DB
             var highestStudentId = from stu in db.Students
                                    orderby stu.UId descending
@@ -220,15 +226,20 @@ namespace LMS.Areas.Identity.Pages.Account
             string newId = GetNewIdString(stuId, profID, adminId);
 
             if (role == "Administrator")
+            {
                 InsertAnAdmin(newId, firstName, lastName, DateOnly.FromDateTime(DOB));
-
-            if (role == "Professor")
+            }
+            else if (role == "Professor")
+            {
                 InsertAProfessor(newId, firstName, lastName, DateOnly.FromDateTime(DOB), departmentAbbrev);
-
-            if (role == "Student")
+            }
+            else if (role == "Student")
+            {
                 InsertAStudent(newId, firstName, lastName, DateOnly.FromDateTime(DOB), departmentAbbrev);
+            }
 
             return newId;
+
         }
 
         /// <summary>
