@@ -8,6 +8,8 @@ using LMS.Models.LMSModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
+using static System.Formats.Asn1.AsnWriter;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -228,10 +230,10 @@ namespace LMS_CustomIdentity.Controllers
         {
             //Test: 
             //Paased: unique key (category name + class id) 
+            //Andy: catweight has type int -> can't put decimal number
             //**BUG**: user input on weight: 1% => 0
 
-
-
+            System.Diagnostics.Debug.WriteLine("catweight: " + catweight);
 
             //Andy Tran: Done
             // Find the class with the specified subject, number, season, and year.
@@ -263,6 +265,7 @@ namespace LMS_CustomIdentity.Controllers
             db.AssignmentCategories.Add(newCategory);
             db.SaveChanges();
 
+
             // Return success if the category was created successfully.
             return Json(new { success = true });
 
@@ -284,10 +287,23 @@ namespace LMS_CustomIdentity.Controllers
         public IActionResult CreateAssignment(string subject, int num, string season, int year, string category, string asgname, int asgpoints, DateTime asgdue, string asgcontents)
         {
             //Test: 
+            //Andy Fixed
             //**BUG**: same assginment name giving error pop-up instead of normal and small "you can't do this" window
 
-            //Andy Tran: TO-DO still need to update the grade
-            // Retrieve the class and category objects for the given parameters
+            //Andy Tran: Done with re-calculation when adding an assigments
+            //Assumption: When adding an assignment, the categori total point gonna increase.
+            //Since students have no submission yet, the default grade for this assignment will be zero -> the grade letter change respectively
+
+
+            // Check if this assignment and category already exists in the class.
+            var existingAssignment = db.Assignments.FirstOrDefault(a => a.Name == asgname && a.CategoryNavigation.Name == category);
+
+            if (existingAssignment != null)
+            {
+                // Return failure if a category with the same name already exists.
+                return Json(new { success = false });
+            }
+
             var query = from course in db.Courses
                         join cls in db.Classes on course.CatalogId equals cls.Listing
                         join department in db.Departments on course.Department equals department.Subject
@@ -319,6 +335,45 @@ namespace LMS_CustomIdentity.Controllers
             db.Assignments.Add(assignment);
             db.SaveChanges();
 
+            // Update the grades of all students in the class
+            var courses = db.Courses.FirstOrDefault(c => c.Department == subject && c.Number == num);
+            var courseListing = courses!.CatalogId;
+            var currentClass = db.Classes.FirstOrDefault(c => c.Listing == courseListing && c.Season == season && c.Year == year);
+            if(currentClass == null)
+            {
+                return Json(new { success = false });
+            }
+
+            System.Diagnostics.Debug.WriteLine("currentClass.ClassId: " + currentClass.ClassId);
+
+            //var enrolledStudents = db.Enrolleds.Where(e => e.Class == currentClass.ClassId).ToList();
+            var enrolledStudents = db.Enrolleds.Where(e => e.Class == currentClass.ClassId).Select(e => e.Student).ToList();
+
+            foreach (var studentUid in enrolledStudents)
+            {
+                System.Diagnostics.Debug.WriteLine("uid: " + studentUid);
+
+                // Compute the new total score and letter grade for the student
+                var assignmentsInClass = db.Assignments.Where(a => a.CategoryNavigation.InClass == currentClass.ClassId).ToList();
+                var categoriesInClass = db.AssignmentCategories.Where(c => c.InClass == currentClass.ClassId).ToList();
+                var totalScore = ComputeTotalScore(assignmentsInClass, categoriesInClass, studentUid);
+
+                System.Diagnostics.Debug.WriteLine("totalScore: " + totalScore);
+
+                var letterGrade = ComputeLetterGrade(totalScore);
+
+                System.Diagnostics.Debug.WriteLine("letterGrade: " + letterGrade);
+
+                // Update the enrolled record for the student
+                var enrolled = db.Enrolleds.FirstOrDefault(e => e.Class == currentClass.ClassId && e.Student == studentUid);
+                if (enrolled != null)
+                {
+                    enrolled.Grade = letterGrade;
+                }
+            }
+
+            db.SaveChanges();
+
             return Json(new { success = true });
         }
 
@@ -344,12 +399,7 @@ namespace LMS_CustomIdentity.Controllers
         {
             //Test: 
             //Need discussion: maybe bug total pts 10, but professor gave 20
-
-            //CatalogID = Listing
-            //ClassId == Inclass
-            //CategoryId = Category
-            //AssignmentId = Assignment
-            //Student = UId
+            //Fixed in GradeSubmission to prevent grade higher to max point
 
             //Andy Tran: Done
             var query = from c in db.Courses
@@ -371,8 +421,6 @@ namespace LMS_CustomIdentity.Controllers
                         };
 
             return Json(query.ToArray());
-
-
         }
 
 
@@ -391,34 +439,43 @@ namespace LMS_CustomIdentity.Controllers
         public IActionResult GradeSubmission(string subject, int num, string season, int year, string category, string asgname, string uid, int score)
         {
             //Andy Tran: Done
+            //Check if course exist
             var course = db.Courses.FirstOrDefault(c => c.Department == subject && c.Number == num);
             if (course == null)
             {
-                return NotFound();
+                return Json(new { success = false });
             }
 
+            //Check if class exist
             var courseListing = course.CatalogId;
             var currentClass = db.Classes.FirstOrDefault(c => c.Listing == courseListing && c.Season == season && c.Year == year);
             if (currentClass == null)
             {
-                return NotFound();
+                return Json(new { success = false });
             }
 
+            //Check if assignment exist
             var assignment = db.Assignments.FirstOrDefault(a => a.Name == asgname && a.CategoryNavigation.Name == category && a.CategoryNavigation.InClass == currentClass.ClassId);
             if (assignment == null)
             {
-                return NotFound();
+                return Json(new { success = false });
             }
 
+            //Check if the max point < score
+            if (assignment.MaxPoints < score)
+            {
+                return Json(new { success = false });
+            }
+
+            //Check if course exist
             var submission = db.Submissions.FirstOrDefault(s => s.Assignment == assignment.AssignmentId && s.Student == uid);
             if (submission == null)
             {
-                return NotFound();
+                return Json(new { success = false });
             }
 
             submission.Score = (uint)score;
             db.SaveChanges();
-
 
 
             //Andy Tran: TO-DO still need to update grade 
@@ -426,21 +483,40 @@ namespace LMS_CustomIdentity.Controllers
             var enrolled = db.Enrolleds.FirstOrDefault(e => e.Class == currentClass.ClassId && e.Student == uid);
             if (enrolled == null)
             {
-                return NotFound();
+                return Json(new { success = false });
             }
 
             var assignmentsInClass = db.Assignments.Where(a => a.CategoryNavigation.InClass == currentClass.ClassId).ToList();
             var categoriesInClass = db.AssignmentCategories.Where(ac => ac.InClass == currentClass.ClassId).ToList();
 
+            double totalScore = ComputeTotalScore(assignmentsInClass, categoriesInClass, uid);
+            enrolled.Grade = ComputeLetterGrade(totalScore);
+
+            db.SaveChanges();
+
+            return Json(new { success = true });
+        }
+
+        private double ComputeTotalScore(List<Assignment> assignmentsInClass, List<AssignmentCategory> categoriesInClass, string uid)
+        {
             double totalScore = 0.0;
-            double totalMaxPoints = 0.0;
             double totalWeightedScore = 0.0;
             double totalWeight = 0.0;
 
-            foreach (var categoryInClass in categoriesInClass)
+            //If student don't have any submission for an assigment -> score = 0
+            //emtpy AssignmentCategory: if no assignment, don't include in calculation
+            //non-empty category: 
+            // Calculate the percentage of (CategoryPoint = total points earned / total max points) of all assignments in the category (btw 0.0 - 1.0)
+            // Then Multiple the Percentage by category weight (scaledTotal = categoryPercentage * categoryInClass.Weight)
+            // There is no rule assignment category weights must sum to 100 -> Rescale
+            // Calculate the scalingFactor = 100 / (sum of all category weights)
+            // Multiple totalScore = totalWeightedScore * scalingFactor 
+            // Convert totalScore -> Grade (E - A) -> Update in databases (Enrolled table)
+                foreach (var categoryInClass in categoriesInClass)
             {
                 var assignmentsInCategory = assignmentsInClass.Where(a => a.CategoryNavigation.CategoryId == categoryInClass.CategoryId).ToList();
 
+                //Include in calculate when have at least one assigment
                 if (assignmentsInCategory.Count > 0)
                 {
                     double categoryScore = 0.0;
@@ -458,24 +534,29 @@ namespace LMS_CustomIdentity.Controllers
                         categoryMaxPoints += assignmentInCategory.MaxPoints;
                     }
 
+                    //The Percentage of One Category
                     var categoryPercentage = categoryMaxPoints == 0 ? 0 : categoryScore / categoryMaxPoints;
+
+                    System.Diagnostics.Debug.WriteLine("categoryMaxPoints: " + categoryMaxPoints);
+                    //Calculate the percentage by the weight (Not a final percentage)
                     var scaledTotal = categoryPercentage * categoryInClass.Weight;
+
                     totalWeightedScore += scaledTotal;
                     totalWeight += categoryInClass.Weight;
                 }
+
             }
 
+            //No rule assignment category weights must sum to 100 -> Rescale
+            // Calculate the scaling factor = 100 / (sum of all category weights)
             var scalingFactor = totalWeight == 0 ? 0 : 100.0 / totalWeight;
             totalScore = totalWeightedScore * scalingFactor;
 
-            enrolled.Grade = ComputeLetterGrade(totalScore);
 
-            db.SaveChanges();
+            System.Diagnostics.Debug.WriteLine("totalScore: " + totalScore);
 
-            return Json(new { success = true });
-
+            return totalScore;
         }
-
 
         private string ComputeLetterGrade(double percentageGrade)
         {
