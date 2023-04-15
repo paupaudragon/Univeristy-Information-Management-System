@@ -100,6 +100,11 @@ namespace LMS.Controllers
         /// <returns>The JSON result</returns>
         public IActionResult GetCourses(string subject)
         {
+            //Test: 
+            //1. As students 
+            //2. As admin
+            //3. ad prof
+
             //tzhou: done
             var query = from course in db.Courses
                         where course.Department == subject
@@ -150,8 +155,10 @@ namespace LMS.Controllers
         /// false if the course already exists, true otherwise.</returns>
         public IActionResult CreateCourse(string subject, int number, string name)
         {
-            //To see what's false looks like in webpage
-            //return Json(new { success = false });
+            //Test: 
+            //1. Add course with 99999999 num
+            //2. add course with 1, and 0
+            //3. add course with same number should not allow
 
             //thzou: done
             if (IsCourseExist(number, subject))
