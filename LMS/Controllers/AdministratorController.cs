@@ -50,11 +50,14 @@ namespace LMS.Controllers
         /// false if the department already exists, true otherwise.</returns>
         public IActionResult CreateDepartment(string subject, string name)
         {
-            //use this to see what's the normal output of webpage when false.
-            //return Json(new { success = false });
+            //Test: 
+            //1. create a new dept with different subject abbrev
+            //2. create a dpt with same subject abbrev should not allow
+            //BUG:
+            //1. Exception error when sub. abbrev. is longer than 4 char.(fixed)
 
             //tzhou: done
-            if (IsSubjectExist(subject))
+            if (IsSubjectExist(subject) || subject.Length>4)
                 return Json(new { success = false});
 
             Department department = new Department();
@@ -97,6 +100,11 @@ namespace LMS.Controllers
         /// <returns>The JSON result</returns>
         public IActionResult GetCourses(string subject)
         {
+            //Test: 
+            //1. As students 
+            //2. As admin
+            //3. ad prof
+
             //tzhou: done
             var query = from course in db.Courses
                         where course.Department == subject
@@ -147,8 +155,10 @@ namespace LMS.Controllers
         /// false if the course already exists, true otherwise.</returns>
         public IActionResult CreateCourse(string subject, int number, string name)
         {
-            //To see what's false looks like in webpage
-            //return Json(new { success = false });
+            //Test: 
+            //1. Add course with 99999999 num
+            //2. add course with 1, and 0
+            //3. add course with same number should not allow
 
             //thzou: done
             if (IsCourseExist(number, subject))
