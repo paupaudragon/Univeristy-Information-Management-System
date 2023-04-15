@@ -294,32 +294,45 @@ namespace LMS_CustomIdentity.Controllers
             //Assumption: When adding an assignment, the categori total point gonna increase.
             //Since students have no submission yet, the default grade for this assignment will be zero -> the grade letter change respectively
 
+            // Find the class with the specified subject, number, season, and year.
+            var currentClass = db.Classes.FirstOrDefault(c => c.ListingNavigation.Department == subject && c.ListingNavigation.Number == num && c.Season == season && c.Year == year);
+            if (currentClass == null)
+            {
+                // Return failure if the class does not exist.
+                return Json(new { success = false });
+            }
 
             // Check if this assignment and category already exists in the class.
-            var existingAssignment = db.Assignments.FirstOrDefault(a => a.Name == asgname && a.CategoryNavigation.Name == category);
-
+            var existingAssignment = db.Assignments.FirstOrDefault(a => a.Name == asgname && a.CategoryNavigation.Name == category && a.CategoryNavigation.InClass == currentClass.ClassId);
             if (existingAssignment != null)
             {
                 // Return failure if a category with the same name already exists.
                 return Json(new { success = false });
             }
 
-            var query = from course in db.Courses
-                        join cls in db.Classes on course.CatalogId equals cls.Listing
-                        join department in db.Departments on course.Department equals department.Subject
-                        join assignmentCategory in db.AssignmentCategories on cls.ClassId equals assignmentCategory.InClass
-                        where department.Subject == subject
-                              && course.Number == num
-                              && cls.Season == season
-                              && cls.Year == year
-                              && assignmentCategory.Name == category
-                        select new { cls, assignmentCategory };
-
-            var result = query.FirstOrDefault();
-            if (result == null)
+            //Get the category in this class that want to add an assignment
+            var categories = db.AssignmentCategories.FirstOrDefault(a => a.InClass == currentClass.ClassId && a.Name == category);
+            if (categories == null)
             {
                 return Json(new { success = false });
             }
+
+            //var query = from course in db.Courses
+            //            join cls in db.Classes on course.CatalogId equals cls.Listing
+            //            join department in db.Departments on course.Department equals department.Subject
+            //            join assignmentCategory in db.AssignmentCategories on cls.ClassId equals assignmentCategory.InClass
+            //            where department.Subject == subject
+            //                  && course.Number == num
+            //                  && cls.Season == season
+            //                  && cls.Year == year
+            //                  && assignmentCategory.Name == category
+            //            select new { cls, assignmentCategory };
+
+            //var result = query.FirstOrDefault();
+            //if (result == null)
+            //{
+            //    return Json(new { success = false });
+            //}
 
             // Create a new assignment with the given parameters
             var assignment = new Assignment
@@ -328,7 +341,7 @@ namespace LMS_CustomIdentity.Controllers
                 Contents = asgcontents,
                 Due = asgdue,
                 MaxPoints = (uint)asgpoints,
-                Category = result.assignmentCategory.CategoryId
+                Category = categories.CategoryId
             };
 
             // Add the assignment to the database
@@ -336,14 +349,6 @@ namespace LMS_CustomIdentity.Controllers
             db.SaveChanges();
 
             // Update the grades of all students in the class
-            var courses = db.Courses.FirstOrDefault(c => c.Department == subject && c.Number == num);
-            var courseListing = courses!.CatalogId;
-            var currentClass = db.Classes.FirstOrDefault(c => c.Listing == courseListing && c.Season == season && c.Year == year);
-            if(currentClass == null)
-            {
-                return Json(new { success = false });
-            }
-
             System.Diagnostics.Debug.WriteLine("currentClass.ClassId: " + currentClass.ClassId);
 
             //var enrolledStudents = db.Enrolleds.Where(e => e.Class == currentClass.ClassId).ToList();
@@ -548,7 +553,7 @@ namespace LMS_CustomIdentity.Controllers
             }
 
             //No rule assignment category weights must sum to 100 -> Rescale
-            // Calculate the scaling factor = 100 / (sum of all category weights)
+            //Calculate the scaling factor = 100 / (sum of all category weights)
             var scalingFactor = totalWeight == 0 ? 0 : 100.0 / totalWeight;
             totalScore = totalWeightedScore * scalingFactor;
 
