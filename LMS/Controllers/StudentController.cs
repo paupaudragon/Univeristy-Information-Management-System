@@ -224,7 +224,7 @@ namespace LMS.Controllers
                 {
                     Assignment = assignmentId,
                     Student = uid,
-                    Score = 0,
+                    Score = 0, // can change it to "--"
                     SubmissionContents = contents,
                     Time = DateTime.Now
                 };
