@@ -200,30 +200,16 @@ namespace LMS.Areas.Identity.Pages.Account
         /// <returns>The uID of the new user</returns>
         string CreateNewUser( string firstName, string lastName, DateTime DOB, string departmentAbbrev, string role )
         {
-            //Test: 
-            //1. Same role with exact same names and dob
-            //2. Same personal info different role
 
-            //Test done
+            var query = (from admin in db.Administrators
+                         select admin.UId).Union
+                         (from stu in db.Students
+                          select stu.UId).Union
+                        (from pro in db.Professors
+                         select pro.UId);
 
-            //Get the highest id in DB
-            var highestStudentId = from stu in db.Students
-                                   orderby stu.UId descending
-                                   select stu.UId;
-
-            var highestProfessorId = from prof in db.Professors
-                                     orderby prof.UId descending
-                                     select prof.UId;
-
-            var highestAdministratorId = from admin in db.Administrators
-                                         orderby admin.UId descending
-                                         select admin.UId;
-
-            int stuId = ConvertUidToInt(highestStudentId.FirstOrDefault());
-            int profID = ConvertUidToInt(highestProfessorId.FirstOrDefault());
-            int adminId = ConvertUidToInt(highestAdministratorId.FirstOrDefault());
-
-            string newId = GetNewIdString(stuId, profID, adminId);
+            int highestID = ConvertUidToInt(query.Max());
+            string newId = GetNewIdString(highestID);
 
             if (role == "Administrator")
             {
@@ -268,17 +254,13 @@ namespace LMS.Areas.Identity.Pages.Account
         }
 
         /// <summary>
-        /// Gets the new user id to add
+        /// Generate a new id string 
         /// </summary>
-        /// <param name="stuId">current highest uid in students</param>
-        /// <param name="profID">current highest uid in professors</param>
-        /// <param name="adminId">current highest uid in admins</param>
-        /// <returns>a new uid string to add</returns>
-        private static string GetNewIdString(int stuId, int profID, int adminId)
+        /// <param name="highestId">Current highest id in the database</param>
+        /// <returns>A new uid string</returns>
+        private static string GetNewIdString(int highestId)
         {
-            int newId; 
-            int[] ids = { stuId, profID, adminId };
-            int highestId = ids.Max();
+            int newId;
 
             if (highestId < 0)
                 return "u0000001";
