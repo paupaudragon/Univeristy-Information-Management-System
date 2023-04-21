@@ -424,12 +424,6 @@ namespace LMS_CustomIdentity.Controllers
                 return Json(new { success = false });
             }
 
-            //Check if the max point < score
-            if (assignment.MaxPoints < score)
-            {
-                return Json(new { success = false });
-            }
-
             //Check if course exist
             var submission = db.Submissions.FirstOrDefault(s => s.Assignment == assignment.AssignmentId && s.Student == uid);
             if (submission == null)
@@ -500,6 +494,7 @@ namespace LMS_CustomIdentity.Controllers
 
             //No rule assignment category weights must sum to 100 -> Rescale
             //Calculate the scaling factor = 100 / (sum of all category weights)
+
             var scalingFactor = totalWeight == 0 ? 0 : 100.0 / totalWeight;
             totalScore = totalWeightedScore * scalingFactor;
 
