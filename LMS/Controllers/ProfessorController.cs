@@ -452,6 +452,13 @@ namespace LMS_CustomIdentity.Controllers
             return Json(new { success = true });
         }
 
+        /// <summary>
+        /// Computes total score for a students
+        /// </summary>
+        /// <param name="assignmentsInClass">All assignment in the class</param>
+        /// <param name="categoriesInClass">All assignment categories in the class</param>
+        /// <param name="uid">uid of the student</param>
+        /// <returns>A total score</returns>
         private double ComputeTotalScore(List<Assignment> assignmentsInClass, List<AssignmentCategory> categoriesInClass, string uid)
         {
             double totalScore = 0.0;
@@ -501,6 +508,11 @@ namespace LMS_CustomIdentity.Controllers
             return totalScore;
         }
 
+        /// <summary>
+        /// Computes letter grade baded scores
+        /// </summary>
+        /// <param name="percentageGrade">percentage grade</param>
+        /// <returns>A letter grade</returns>
         private string ComputeLetterGrade(double percentageGrade)
         {
             if (percentageGrade >= 93)

@@ -322,6 +322,11 @@ namespace LMS.Controllers
             return Json(new { gpa });
         }
 
+        /// <summary>
+        /// Caculates student GPA
+        /// </summary>
+        /// <param name="enrolledClasses">All Enrolled classed</param>
+        /// <returns>A total GPA</returns>
         private double CalculateGPA(List<Enrolled> enrolledClasses)
         {
             double totalPoints = 0.0;
